@@ -1,0 +1,37 @@
+# Lambda container image: FastAPI + Mangum (ASGI) on AWS managed Python 3.13.
+#
+# Build for Lambda (x86_64 in Terraform). AWS rejects images whose manifest includes BuildKit
+# provenance/SBOM attestations — disable them when building:
+#
+#   cd backend
+#   docker buildx build --platform linux/amd64 -f Dockerfile.lambda \
+#     --provenance=false --sbom=false \
+#     -t <account>.dkr.ecr.<region>.amazonaws.com/<repo>:latest --push .
+#
+# Or load locally then push:
+#   docker buildx build ... --provenance=false --sbom=false -t meridian-api:lambda --load .
+#
+# Fallback if Lambda still complains: DOCKER_BUILDKIT=0 docker build --platform linux/amd64 ...
+#
+# Env vars: same as the normal backend (e.g. OPENROUTER_API_KEY, DATABASE_URL, ...).
+
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS lock_export
+WORKDIR /out
+COPY pyproject.toml uv.lock ./
+RUN uv export --frozen --no-dev --no-editable -o /out/requirements.txt
+
+# Default Terraform uses x86_64; keep platform aligned when building the image.
+FROM --platform=linux/amd64 public.ecr.aws/lambda/python:3.13
+
+COPY --from=lock_export /out/requirements.txt /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
+
+# Application code
+COPY --chown=root:root lambda_handler.py main.py /var/task/
+COPY --chown=root:root api /var/task/api
+COPY --chown=root:root app_mcp /var/task/app_mcp
+COPY --chown=root:root config /var/task/config
+COPY --chown=root:root modules /var/task/modules
+
+# Lambda RIC expects module.function (see AWS Lambda base image contract).
+CMD ["lambda_handler.handler"]
