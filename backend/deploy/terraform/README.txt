@@ -32,10 +32,7 @@ Pass non-secret config via lambda_environment; inject secrets via Secrets Manage
     OPENROUTER_API_KEY = "..."
     ENVIRONMENT        = "production"
     BASE_URL           = "https://openrouter.ai/api/v1"
-    DATABASE_URL       = "sqlite:////tmp/app.db"
   }
-
-SQLite on Lambda is ephemeral; use RDS + postgresql+psycopg://... for persistence.
 
 Local Docker (not Lambda) still uses: backend/Dockerfile + uvicorn.
 

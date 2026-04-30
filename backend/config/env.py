@@ -28,9 +28,6 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     openrouter_api_key: str = ""
 
-    # Database (placeholder)
-    database_url: str = "sqlite:///./dev.db"
-
     model_config = SettingsConfigDict(
         env_file=_ENV_FILES or (".env",),
         env_file_encoding="utf-8",

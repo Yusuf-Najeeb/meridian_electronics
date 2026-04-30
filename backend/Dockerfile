@@ -10,8 +10,6 @@
 #
 # AWS (typical ECS/Fargate): push image to ECR, set task env/secrets:
 #   OPENROUTER_API_KEY   — Secrets Manager → container secret
-#   DATABASE_URL         — optional; default SQLite is ephemeral unless you mount /data
-#                         For RDS use: postgresql+psycopg://user:pass@host:5432/dbname
 #   BASE_URL             — OpenRouter API base (default https://openrouter.ai/api/v1)
 #   ENVIRONMENT          — e.g. production
 #   PORT                 — listen port (default 8000; ALB target group must match)

@@ -6,8 +6,7 @@ from openai import AsyncOpenAI
 from agents import set_default_openai_client, set_default_openai_api, set_tracing_disabled
 from agents.mcp import MCPServerManager
 from app_mcp.server import order_server
-from config import settings, configure_logging, engine, logger
-from config.db import Base
+from config import settings, configure_logging, logger
 from api.router import router
 from api.middlewares.error_handler import global_error_handler
 from api.middlewares.request_logger import request_logger
@@ -16,7 +15,6 @@ from api.middlewares.request_logger import request_logger
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     configure_logging()
-    Base.metadata.create_all(bind=engine)
 
     client = AsyncOpenAI(api_key=settings.openrouter_api_key, base_url=settings.base_url)
     set_default_openai_client(client)
@@ -46,7 +44,7 @@ app.middleware("http")(global_error_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

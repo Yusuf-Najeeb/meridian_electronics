@@ -13,7 +13,7 @@
 #
 # Fallback if Lambda still complains: DOCKER_BUILDKIT=0 docker build --platform linux/amd64 ...
 #
-# Env vars: same as the normal backend (e.g. OPENROUTER_API_KEY, DATABASE_URL, ...).
+# Env vars: same as the normal backend (e.g. OPENROUTER_API_KEY, BASE_URL, ...).
 
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS lock_export
 WORKDIR /out

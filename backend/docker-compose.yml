@@ -12,13 +12,10 @@ services:
       - "8000:8000"
     environment:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/app.db}
       ENVIRONMENT: ${ENVIRONMENT:-development}
       DEBUG: ${DEBUG:-false}
       BASE_URL: ${BASE_URL:-https://openrouter.ai/api/v1}
       PORT: "8000"
-    volumes:
-      - sqlite_data:/data
     healthcheck:
       test:
         [
@@ -31,6 +28,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 60s
-
-volumes:
-  sqlite_data:
