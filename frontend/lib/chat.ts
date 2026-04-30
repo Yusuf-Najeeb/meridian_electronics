@@ -35,7 +35,7 @@ export async function sendChatMessage(payload: ChatRequest): Promise<ChatRespons
       typeof data === "object" && data !== null && "detail" in data
         ? String((data as { detail: unknown }).detail)
         : text || res.statusText;
-    throw new Error(detail);
+    throw new Error(`HTTP ${res.status}: ${detail}`.trim());
   }
 
   return data as ChatResponse;
